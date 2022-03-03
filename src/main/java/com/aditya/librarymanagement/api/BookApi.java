@@ -34,11 +34,11 @@ public class BookApi {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        return bookService.registerUser(signUpRequest);
+        return ResponseEntity.ok(bookService.registerUser(signUpRequest));
     }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        return bookService.authenticateUser(loginRequest);
+        return ResponseEntity.ok(bookService.authenticateUser(loginRequest));
     }
 }
