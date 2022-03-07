@@ -3,6 +3,7 @@ package com.aditya.librarymanagement.api;
 import com.aditya.librarymanagement.model.Book;
 import com.aditya.librarymanagement.model.request.LoginRequest;
 import com.aditya.librarymanagement.model.request.SignupRequest;
+import com.aditya.librarymanagement.service.AuthenticationService;
 import com.aditya.librarymanagement.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,12 @@ import java.util.List;
 public class BookApi {
 
     private BookService bookService;
+    private AuthenticationService authenticationService;
 
     @Autowired
-    public BookApi(BookService bookService) {
+    public BookApi(BookService bookService, AuthenticationService authenticationService) {
         this.bookService = bookService;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping("/getbooks")
@@ -34,11 +37,16 @@ public class BookApi {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        return bookService.registerUser(signUpRequest);
+        return authenticationService.registerUser(signUpRequest);
     }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        return bookService.authenticateUser(loginRequest);
+        return authenticationService.authenticateUser(loginRequest);
+    }
+
+    @GetMapping("/getfastbook/{bookId}")
+    public Book getFastBook(@PathVariable String bookId){
+        return bookService.getFastBook(bookId);
     }
 }

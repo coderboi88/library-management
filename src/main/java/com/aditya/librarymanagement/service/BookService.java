@@ -8,9 +8,10 @@ import com.aditya.librarymanagement.model.request.LoginRequest;
 import com.aditya.librarymanagement.model.request.SignupRequest;
 import com.aditya.librarymanagement.model.response.JwtResponse;
 import com.aditya.librarymanagement.model.response.MessageResponse;
-import com.aditya.librarymanagement.repository.BookRepository;
-import com.aditya.librarymanagement.repository.RoleRepository;
-import com.aditya.librarymanagement.repository.UserRepository;
+import com.aditya.librarymanagement.repository.elastic.BookElasticRepository;
+import com.aditya.librarymanagement.repository.mongo.BookRepository;
+import com.aditya.librarymanagement.repository.mongo.RoleRepository;
+import com.aditya.librarymanagement.repository.mongo.UserRepository;
 import com.aditya.librarymanagement.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,24 +31,17 @@ import java.util.stream.Collectors;
 public class BookService {
 
     private BookRepository bookRepository;
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder encoder;
-    private JwtUtil jwtUtil;
-    private AuthenticationManager authenticationManager;
+    private BookElasticRepository bookElasticRepository;
 
     @Autowired
-    public BookService(BookRepository bookRepository, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtil jwtUtil,AuthenticationManager authenticationManager) {
+    public BookService(BookRepository bookRepository, BookElasticRepository bookElasticRepository) {
         this.bookRepository = bookRepository;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.encoder = encoder;
-        this.jwtUtil = jwtUtil;
-        this.authenticationManager = authenticationManager;
+        this.bookElasticRepository = bookElasticRepository;
     }
 
     public void addBook(Book book) {
         bookRepository.save(book);
+        bookElasticRepository.save(book);
     }
 
     public List<Book> getBooks() {
@@ -56,76 +50,25 @@ public class BookService {
 
     public void addBooks(List<Book> books) {
         bookRepository.saveAll(books);
+        bookElasticRepository.saveAll(books);
     }
 
     public void updateBook(Book book) {
         bookRepository.save(book);
+        bookElasticRepository.save(book);
     }
 
     public void deleteBook(String bookId) {
-        bookRepository.deleteById(Integer.parseInt(bookId));
+        bookRepository.deleteByBookId(Integer.parseInt(bookId));
+        bookElasticRepository.deleteByBookId(Integer.parseInt(bookId));
     }
 
     public Book getBook(String bookId) {
         return bookRepository.findByBookId(Integer.parseInt(bookId));
     }
 
-    public ResponseEntity<?> registerUser(SignupRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
-        }
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
-        // Create new user's account
-        User user = new User(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
-        Set<String> strRoles = signUpRequest.getRoles();
-        Set<Role> roles = new HashSet<>();
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-                        break;
-                    case "user":
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
-            });
-        }
-        user.setRoles(roles);
-        userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 
-    }
-
-    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailImpl userDetails = (UserDetailImpl) authentication.getPrincipal();
-        String jwt = jwtUtil.generateToken(userDetails);
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
+    public Book getFastBook(String bookId) {
+        return bookElasticRepository.findByBookId(Integer.parseInt(bookId));
     }
 }

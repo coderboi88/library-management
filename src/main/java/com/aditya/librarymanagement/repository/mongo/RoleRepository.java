@@ -1,4 +1,4 @@
-package com.aditya.librarymanagement.repository;
+package com.aditya.librarymanagement.repository.mongo;
 
 import com.aditya.librarymanagement.model.ERole;
 import com.aditya.librarymanagement.model.Role;
