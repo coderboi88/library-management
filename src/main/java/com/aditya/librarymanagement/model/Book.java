@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "books")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "books")
 public class Book {
 
     @Id

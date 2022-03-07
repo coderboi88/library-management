@@ -1,7 +1,7 @@
 package com.aditya.librarymanagement.service;
 
 import com.aditya.librarymanagement.model.User;
-import com.aditya.librarymanagement.repository.UserRepository;
+import com.aditya.librarymanagement.repository.mongo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
