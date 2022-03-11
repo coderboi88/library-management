@@ -1,41 +1,21 @@
-package com.aditya.librarymanagement.model;
+package com.aditya.librarymanagement.model.request;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
+public class BookRequest {
 
-@Document(collection = "books")
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "books")
-public class Book {
-
-    @Transient
-    public static final String SEQUENCE_NAME = "books_sequence";
-
-    @Id
-    private int bookId;
     private String title;
     private String description;
     private String author;
     private String publisher;
     private String category;
 
-    public Book(){}
+    public BookRequest(){}
 
-    public Book(int bookId, String title, String description, String author, String publisher, String category) {
-        this.bookId = bookId;
+    public BookRequest(String title, String description, String author, String publisher, String category) {
         this.title = title;
         this.description = description;
         this.author = author;
         this.publisher = publisher;
         this.category = category;
-    }
-
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
     }
 
     public String getTitle() {
@@ -54,6 +34,14 @@ public class Book {
         this.description = description;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public String getPublisher() {
         return publisher;
     }
@@ -68,13 +56,5 @@ public class Book {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 }

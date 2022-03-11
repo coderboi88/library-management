@@ -1,6 +1,7 @@
 package com.aditya.librarymanagement.api.restricted;
 
 import com.aditya.librarymanagement.model.Book;
+import com.aditya.librarymanagement.model.request.BookRequest;
 import com.aditya.librarymanagement.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +20,18 @@ public class RestrictedBookApi {
     }
 
     @PostMapping("/addbook")
-    public Book addBook(@RequestBody Book book){
-        return bookService.addBook(book);
+    public Book addBook(@RequestBody BookRequest bookRequest){
+        return bookService.addBook(bookRequest);
     }
 
     @PostMapping("/addbooks")
-    public List<Book> addBooks(@RequestBody List<Book> books){
-        return bookService.addBooks(books);
+    public List<Book> addBooks(@RequestBody List<BookRequest> booksRequests){
+        return bookService.addBooks(booksRequests);
     }
 
     @PutMapping("/updatebook")
-    public void updateBook(@RequestBody Book book){
-        bookService.updateBook(book);
+    public void updateBook(@RequestBody BookRequest bookRequest){
+        bookService.updateBook(bookRequest);
     }
 
     @DeleteMapping("/deletebook/{bookId}")
