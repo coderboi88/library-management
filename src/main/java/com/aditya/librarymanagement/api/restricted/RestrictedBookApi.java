@@ -19,13 +19,13 @@ public class RestrictedBookApi {
     }
 
     @PostMapping("/addbook")
-    public void addBook(@RequestBody Book book){
-        bookService.addBook(book);
+    public Book addBook(@RequestBody Book book){
+        return bookService.addBook(book);
     }
 
     @PostMapping("/addbooks")
-    public void addBooks(@RequestBody List<Book> books){
-        bookService.addBooks(books);
+    public List<Book> addBooks(@RequestBody List<Book> books){
+        return bookService.addBooks(books);
     }
 
     @PutMapping("/updatebook")
