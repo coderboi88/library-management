@@ -10,4 +10,5 @@ public interface BookRepository extends MongoRepository<Book,Integer> {
     public Book findByBookId(Integer bookId);
     public Book findByTitle(String title);
     public void deleteByBookId(Integer bookId);
+    public Boolean existsByBookId(Integer bookId);
 }

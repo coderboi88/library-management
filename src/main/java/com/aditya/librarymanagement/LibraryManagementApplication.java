@@ -6,7 +6,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
-@EnableMongoRepositories(basePackages = "com.aditya.librarymanagement.repository.mongo")
+@EnableMongoRepositories(basePackages = {"com.aditya.librarymanagement.repository.mongo","com.aditya.librarymanagement.borrow.repository"})
 @EnableElasticsearchRepositories(basePackages = "com.aditya.librarymanagement.repository.elastic")
 public class LibraryManagementApplication {
 
