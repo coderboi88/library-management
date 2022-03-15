@@ -17,30 +17,40 @@ public class BorrowApi {
         this.borrowService = borrowService;
     }
 
-    @GetMapping("/u/getborrowitem/{bookid}")
+    //User Can check availability of a book
+    @GetMapping("/u/getborrowbook/{bookid}")
     public Borrow getBorrowedBook(@PathVariable String bookid){
         return borrowService.getBorrowedBook(Integer.parseInt(bookid));
     }
 
-    @PostMapping("/r/postborrowitem/{bookid}")
-    public String createBorrowItem(@PathVariable String bookid){
-        return borrowService.createBorrowItem(Integer.parseInt(bookid));
-    }
-
+    //User can check list of book borrowed by him
     @GetMapping("/u/getborrowbooks")
     public List<Borrow> getBorrowBooksByUserId(){
         return borrowService.getBorrowBooksByUserId();
     }
 
+    //Librarian will issue the book
+    @PostMapping("/r/issuebook/{bookid}")
+    public String createBorrowItem(@PathVariable String bookid){
+        return borrowService.createBorrowItem(Integer.parseInt(bookid));
+    }
+
+    //Librarian can check All the borrowed books
+    @GetMapping("/r/getborrowbooklist")
+    public List<Borrow> getBorrowedBooksList(){
+        return borrowService.getBorrowBookList();
+    }
+
+    //Librarian will update while user return the book
     @PutMapping("/r/returnbook/{bookId}")
     public String returnBorrowedBook(@PathVariable String bookId){
         return borrowService.returnBorrowedBook(bookId);
     }
 
-    @DeleteMapping("/r/deleteborrowitem/{borrowId}")
+    //Librarian Can delete the borrow data
+    @DeleteMapping("/r/deleteborrowbook/{borrowId}")
     public String deleteBorrowBook(@PathVariable String borrowId){
         return borrowService.deleteBorrowBook(borrowId);
     }
-
 
 }
