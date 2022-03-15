@@ -12,13 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.SimpleFormatter;
 
 @Service
 public class BorrowService {
@@ -82,18 +77,30 @@ public class BorrowService {
         return "Successfully Updated";
     }
 
+    public String deleteBorrowBook(String borrowId) {
+        borrowRepository.deleteById(Integer.parseInt(borrowId));
+        return "SuccessFully Deleted";
+    }
+
+    public List<Borrow> getBorrowBookList() {
+        return borrowRepository.findAll();
+    }
+
+    //Get Userid
     private String getUserId(){
         UserDetailImpl userDetails = (UserDetailImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         return userDetails.getId();
     }
 
+    //Get Current Date
     private String getCurrentDate(){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         return simpleDateFormat.format(calendar.getTime());
     }
 
+    //Calculate Total no. of Days between two dates
     private int getNumberOfDays(String issueDate,String returnDate){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -108,10 +115,5 @@ public class BorrowService {
         }
 
         return diff;
-    }
-
-    public String deleteBorrowBook(String borrowId) {
-        borrowRepository.deleteById(Integer.parseInt(borrowId));
-        return "SuccessFully Deleted";
     }
 }
