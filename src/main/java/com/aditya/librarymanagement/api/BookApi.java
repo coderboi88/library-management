@@ -30,6 +30,11 @@ public class BookApi {
         return bookService.getBooks();
     }
 
+    @GetMapping("/getbookbycategory/{category}")
+    public List<Book> getBooks(@PathVariable String category){
+        return bookService.getBookByCategory(category);
+    }
+
     @GetMapping("getbook/{bookId}")
     public Book getBook(@PathVariable String bookId){
         return bookService.getBook(bookId);

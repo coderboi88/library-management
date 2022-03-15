@@ -86,4 +86,8 @@ public class BookService {
     public Book getFastBook(String bookId) {
         return bookElasticRepository.findByBookId(Integer.parseInt(bookId));
     }
+
+    public List<Book> getBookByCategory(String category) {
+        return bookRepository.getBookFilteredByCategory(category);
+    }
 }
