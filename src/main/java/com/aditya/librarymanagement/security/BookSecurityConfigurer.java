@@ -36,7 +36,8 @@ public class BookSecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/r/**").hasRole("ADMIN")
-                .antMatchers("/u/**").permitAll()
+                .antMatchers("/u/signup","/u/signin").permitAll()
+                .antMatchers("/u/**").hasAnyRole("ADMIN","USER")
                 .anyRequest().authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
