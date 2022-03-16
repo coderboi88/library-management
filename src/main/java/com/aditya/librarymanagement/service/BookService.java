@@ -17,12 +17,14 @@ public class BookService {
     private BookRepository bookRepository;
     private BookElasticRepository bookElasticRepository;
     private SequenceGeneratorService sequenceGeneratorService;
+    private ElasticSearchService elasticSearchService;
 
     @Autowired
-    public BookService(BookRepository bookRepository, BookElasticRepository bookElasticRepository, SequenceGeneratorService sequenceGeneratorService) {
+    public BookService(BookRepository bookRepository, BookElasticRepository bookElasticRepository, SequenceGeneratorService sequenceGeneratorService, ElasticSearchService elasticSearchService) {
         this.bookRepository = bookRepository;
         this.bookElasticRepository = bookElasticRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
+        this.elasticSearchService = elasticSearchService;
     }
 
     public Book addBook(BookRequest bookRequest) {
@@ -32,8 +34,10 @@ public class BookService {
                 bookRequest.getAuthor(),
                 bookRequest.getPublisher(),
                 bookRequest.getCategory());
-        bookRepository.save(book);
-        return bookElasticRepository.save(book);
+
+        elasticSearchService.createProductIndex(book);  //This has been added to test manual creation of a document in elasticSearch
+        //bookElasticRepository.save(book)
+        return bookRepository.save(book);
     }
 
     public List<Book> getBooks() {

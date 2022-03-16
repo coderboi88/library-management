@@ -5,6 +5,7 @@ import com.aditya.librarymanagement.model.request.LoginRequest;
 import com.aditya.librarymanagement.model.request.SignupRequest;
 import com.aditya.librarymanagement.service.AuthenticationService;
 import com.aditya.librarymanagement.service.BookService;
+import com.aditya.librarymanagement.service.ElasticSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ public class BookApi {
 
     private BookService bookService;
     private AuthenticationService authenticationService;
+    @Autowired
+    private ElasticSearchService elasticSearchService;
 
     @Autowired
     public BookApi(BookService bookService, AuthenticationService authenticationService) {
@@ -52,6 +55,17 @@ public class BookApi {
 
     @GetMapping("/getfastbook/{bookId}")
     public Book getFastBook(@PathVariable String bookId){
-        return bookService.getFastBook(bookId);
+        return elasticSearchService.findByBookId(Integer.parseInt(bookId));
     }
+
+    @GetMapping("/getfastbookbytitle/{title}")
+    public Book getFastBookBytitle(@PathVariable String title){
+        return elasticSearchService.findBookByTitle(title);
+    }
+
+    @GetMapping("/getfastbookbycategory/{category}")
+    public Book getFastBookByCategory(@PathVariable String category){
+        return elasticSearchService.findByCategory(category);
+    }
+
 }
